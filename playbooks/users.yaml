@@ -1,0 +1,11 @@
+- name: Create users and groups
+  remote_user: robinholzi
+  gather_facts: false
+  hosts: all
+  check_mode: true
+  tasks:
+    - name: Check if users exist
+      ansible.builtin.command: id "{{ item }}"
+      loop:
+        - robinholzi
+      changed_when: false

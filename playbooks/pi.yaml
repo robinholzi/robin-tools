@@ -1,0 +1,53 @@
+- name: AWS specifics
+  hosts: all
+  become: true
+  tasks:
+    - name: Load SOPS encrypted variables
+      community.sops.load_vars:
+        file: ../secrets/pi-secrets.sops.yaml
+
+    - name: Install required packages
+      ansible.builtin.apt:
+        name:
+          - ca-certificates
+          - curl
+        state: present
+        update_cache: true
+
+    # TODO: Manage using ansible
+    - name: Add Docker's official GPG key
+      ansible.builtin.shell: |
+        sudo install -m 0755 -d /etc/apt/keyrings
+        sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+        sudo chmod a+r /etc/apt/keyrings/docker.asc
+      changed_when: false
+
+    # TODO: Manage using ansible
+    - name: Add Docker repository
+      ansible.builtin.shell: |
+        set -euo pipefail
+        echo \
+          "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
+          $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
+          sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+      changed_when: false
+      args:
+        executable: /bin/bash
+
+    - name: Install Docker packages
+      ansible.builtin.apt:
+        name:
+          - docker-ce
+          - docker-ce-cli
+          - containerd.io
+          - docker-buildx-plugin
+          - docker-compose-plugin
+        state: present
+        update_cache: true
+
+    - name: Create base directory for core services
+      ansible.builtin.file:
+        path: "{{ core_services_dir }}"
+        state: directory
+        mode: "0755"
+        owner: "robinholzi"

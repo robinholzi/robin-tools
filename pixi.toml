@@ -1,0 +1,79 @@
+[project]
+name = "robin-backup"
+description = "Raspberry Pi backup setup."
+channels = ["conda-forge"]
+platforms = ["osx-arm64", "linux-64"]
+
+[tasks]
+postinstall = "pip install --no-build-isolation --no-deps --disable-pip-version-check -e ."
+
+[dependencies]
+python = ">=3.11"
+go-sops = ">=3.8.1,<4"
+ansible = ">=9.5.1,<10"
+
+[host-dependencies]
+pip = "*"
+setuptools = ">=61"
+setuptools-scm = "*"
+
+[feature.docs.dependencies]
+make = "*"
+numpydoc = "*"
+sphinx = "*"
+sphinxcontrib-apidoc = "*"
+sphinx_rtd_theme = "*"
+
+[feature.docs.tasks]
+docs = "cd docs && make html"
+
+[feature.database.dependencies]
+postgresql = "16"
+
+[feature.test.dependencies]
+pytest = ">=6"
+pytest-cov = "*"
+pytest-md = "*"
+pytest-emoji = "*"
+mypy = "*"
+
+[feature.test.tasks]
+test = "pytest"
+test-coverage = "pytest --cov=robin_backup --cov-report=xml --cov-report=term-missing"
+
+[feature.cloud.dependencies]
+terraform = "1.5.7.*"
+sed = ">=4.8,<5"
+jq = ">=1.7.1,<2"
+yq = ">=3.4.3"
+gnupg = ">=2.5.2"
+
+[feature.lint.dependencies]
+ansible-lint = "*"
+pre-commit = "*"
+insert-license-header = "*"
+docformatter = "*"
+ruff = "*"
+prettier = "*"
+nbstripout = "*"
+sqlfluff = "*"
+taplo = "*"
+pre-commit-hooks = "*"
+typos = "*"
+checkov = ">=3.2.257,<4"
+tflint = ">=0.50.3,<0.51"
+yamllint = "1.32.0"
+
+[feature.lint.tasks]
+pre-commit-install = "pre-commit install"
+pre-commit-run = "pre-commit run -a"
+
+[feature.cli.dependencies]
+typer = ">=0.14"
+docker-py = ">=7.1.0"
+
+[feature.interactive.dependencies]
+ipykernel = "*"
+
+[environments]
+default = ["database", "test", "cloud", "cli", "interactive", "lint"]

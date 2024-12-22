@@ -1,0 +1,12 @@
+- name: Package installation
+  hosts: all
+  gather_facts: false
+  tasks:
+    - name: Install required packages for 'community.docker' ansible module
+      ansible.builtin.apt:
+        name:
+          - python3-packaging
+          - python3-requests
+        state: present
+        update_cache: true
+      become: true

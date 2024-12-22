@@ -1,0 +1,49 @@
+- name: Core services deployment
+  hosts: all
+  gather_facts: false
+  tasks:
+    - name: Load SOPS encrypted variables
+      community.sops.load_vars:
+        file: ../secrets/pi-secrets.sops.yaml
+
+    - name: Ensure core services base directory exists
+      ansible.builtin.file:
+        path: "{{ core_services_dir }}"
+        state: directory
+        mode: "0755"
+
+    - name: Create directories for core services
+      ansible.builtin.file:
+        path: "{{ core_services_dir }}/{{ item.path }}"
+        state: directory
+        mode: "{{ item.mode | default('0755') }}"
+      loop:
+        - path: "postgres"
+          mode: "0755"
+
+    - name: "Create container for service {{ service.name }}"
+      community.docker.docker_container:
+        name: "{{ service.name }}"
+        state: started
+        restart_policy: on-failure
+        restart_retries: 3
+        image: "{{ service.image }}"
+        command: "{{ service.command | default(omit) }}"
+        volumes: "{{ service.volumes | default(omit) }}"
+        env: "{{ service.env | default(omit) }}"
+        ports: "{{ service.ports | default(omit) }}"
+      become: true
+      no_log: true
+      loop:
+        # Postgres
+        - image: "postgres:16"
+          name: postgres
+          env:
+            POSTGRES_USER: postgres
+            POSTGRES_PASSWORD: "{{ core_services['postgres']['password'] }}"
+          ports:
+            - "5432:5432"
+          volumes:
+            - "{{ core_services_dir }}/postgres/data:/var/lib/postgresql/data"
+      loop_control:
+        loop_var: service

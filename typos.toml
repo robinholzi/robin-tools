@@ -1,0 +1,14 @@
+[default.extend-words]
+
+[files]
+extend-exclude = [
+  "**/*.sops.yml",
+  "**/*.sops.yaml",
+  "**/*.sops.json",
+  ".sops.yaml",
+  "ami.yaml",
+  "*.pub",
+  "**/saml-proxy/*.xml",
+  # we have an "Avaliable" as an alias color
+  "system-metrics-recommended.json",
+]

@@ -1,0 +1,8 @@
+---
+all:
+  hosts:
+    localhost:
+      ansible_connection: ssh
+      ansible_host: localhost
+  vars:
+    on_pi: true

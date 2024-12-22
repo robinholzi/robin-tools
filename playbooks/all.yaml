@@ -1,0 +1,9 @@
+# - name: Pi specifics
+#   when: not on_aws
+#   ansible.builtin.import_playbook: pi.yaml
+# - name: User setup
+#   ansible.builtin.import_playbook: users.yaml
+# - name: Package installation
+#   ansible.builtin.import_playbook: install.yaml
+# - name: Core services deployment
+#   ansible.builtin.import_playbook: core-services.yaml

@@ -1,0 +1,3 @@
+---
+default_postgres_password: thisIsNotSecret
+core_services_dir: /services
