@@ -11,4 +11,5 @@ extend-exclude = [
   "**/saml-proxy/*.xml",
   # we have an "Avaliable" as an alias color
   "system-metrics-recommended.json",
+  "**/*",
 ]

@@ -31,3 +31,9 @@ sops --decrypt ./secrets/aws-dev.sops.yaml
 # Modify secrets file in-place.
 sops ./secrets/aws-dev.sops.yaml
 ```
+
+## Tools
+
+### RSync
+
+Bidirectional sync between local and remote directories.
