@@ -32,6 +32,8 @@ alias gaa="git add -A"
 alias gc="git commit"
 alias gcm="git commit -m"
 alias gm="git merge"
+alias gmm="git merge main"
+alias gmom="git merge origin/main"
 alias gps="git push"
 
 alias cat="bat"
